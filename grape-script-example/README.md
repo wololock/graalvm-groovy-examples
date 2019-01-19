@@ -79,3 +79,35 @@ The last example shows that we have reduced execution time from `1.229s` to `0.2
 
 [![asciicast](https://asciinema.org/a/222429.svg)](https://asciinema.org/a/222429)
 
+
+## Creating a Docker image
+
+You can also create a Docker image using the Groovy script.
+The image handles compilation and native image creation, so you don't even have to have GraalVM installed on your computer.
+
+### Building an image
+
+```bash
+docker build -t countlinks .
+```
+
+### Running `countlinks` in a new container
+
+```bash
+docker run --rm --read-only countlinks https://e.printstacktrace.blog
+```
+
+### Running `countlinks` in a running container (detached)
+
+In this case we firstly run a container that opens `/var/log/yum.log` file and follows changes in this file with `tail -f`.
+This way the container does not terminate and we can attach to it and execute commands.
+
+```bash
+docker run -d --name countlinks --rm --read-only --entrypoint "tail" countlinks -f /var/log/yum.log
+```
+
+When the container is running we can use `docker exec` to execute command.
+
+```bash
+docker exec countlinks cd /app && ./countlinks.sh https://e.printstacktrace.blog
+```
