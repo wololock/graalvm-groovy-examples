@@ -1,0 +1,16 @@
+[
+	{
+		"name": "hello",
+		"allDeclaredConstructors": true,
+		"allPublicConstructors": true,
+		"allDeclaredMethods": true,
+		"allPublicMethods": true
+	},
+	{
+		"name": "org.codehaus.groovy.runtime.dgm$49",
+		"allDeclaredConstructors": true,
+		"allPublicConstructors": true,
+		"allDeclaredMethods": true,
+		"allPublicMethods": true
+	}
+]
