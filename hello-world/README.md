@@ -46,3 +46,7 @@ Running compiled executable file:
 $ ./hello test
 Hello, test!
 ```
+
+### Known issues
+
+* https://github.com/oracle/graal/issues/1260
