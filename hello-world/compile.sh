@@ -5,13 +5,25 @@ if [[ -z ${GROOVY_HOME+x} ]]; then
     exit 1
 fi
 
+mkdir -p out/
+
 GROOVY_VERSION=`groovy -version | awk '{print $3}'`
 
-CLASSPATH=".:$GROOVY_HOME/lib/groovy-$GROOVY_VERSION.jar"
+CLASSPATH=".:$GROOVY_HOME/lib/groovy-$GROOVY_VERSION.jar:./out/"
 
-if [[ ! -f ./hello.class ]]; then
+if [[ ! -f ./out/hello.class ]]; then
     echo "Compiling the script..."
-    groovyc --configscript=./compiler.groovy hello.groovy
+    groovyc -d=out/ --configscript=./conf/compiler.groovy hello.groovy
+fi
+
+if [[ ! -f ./out/conf/reflect-config.json ]]; then
+    echo "Prepring native-image configuration files..."
+    java -agentlib:native-image-agent=config-output-dir=out/conf/ \
+        -cp ${CLASSPATH} \
+        hello test >/dev/null
+
+    echo "Removing incorrect reflection classes..."
+    groovy ./conf/removeFromJson.groovy out/conf/reflect-config.json java.lang.reflect.Executable
 fi
 
 echo "Compiling GraalVM native image..."
@@ -19,8 +31,12 @@ echo "Compiling GraalVM native image..."
 native-image --allow-incomplete-classpath \
     -H:+AllowVMInspection \
     -H:+ReportUnsupportedElementsAtRuntime \
-    -H:ReflectionConfigurationFiles=reflections.json \
-    --delay-class-initialization-to-runtime=org.codehaus.groovy.control.XStreamUtils,groovy.grape.GrapeIvy \
+    -H:ConfigurationFileDirectories=out/conf/ \
+    --initialize-at-build-time \
+    --initialize-at-run-time=org.codehaus.groovy.control.XStreamUtils,groovy.grape.GrapeIvy \
+    --no-fallback \
     --no-server \
     -cp ${CLASSPATH} \
-    hello
+    hello &&
+
+echo -e "\nNative image compilation done! You can try the demo now, e.g.\n\n \$ ./hello test"

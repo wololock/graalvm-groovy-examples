@@ -1,1 +1,1 @@
-println "Hello, ${(getProperty("args") as String[])[0]}!" 
+println "Hello, ${(getProperty("args") as List)[0] ?: 'World'}!"
