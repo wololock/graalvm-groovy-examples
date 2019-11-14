@@ -4,8 +4,8 @@ This example was documented in the following blog post: [GraalVM with Groovy and
 
 ## Requirements
 
-* GraalVM 1.0-RC11
-* Groovy 2.5.2
+* GraalVM `19.2.1`
+* Groovy `2.5.8`
 * `GROOVY_HOME` environment variable has to be set
 * `JAVA_HOME` environment variable has to be set
 
