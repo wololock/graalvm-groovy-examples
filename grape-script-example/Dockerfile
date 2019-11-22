@@ -1,11 +1,11 @@
-FROM oracle/graalvm-ce:19.2.1
+FROM oracle/graalvm-ce:19.3.0
 
 ADD . /app/
 
 ENV GROOVY_VERSION="2.5.8"
 ENV GROOVY_HOME=/root/.sdkman/candidates/groovy/$GROOVY_VERSION
 
-RUN yum install -y zip unzip
+RUN yum install -y zip unzip libstdc++-static
 RUN gu install native-image
 RUN curl -s "https://get.sdkman.io" | bash
 RUN bash -c "source $HOME/.sdkman/bin/sdkman-init.sh && \
